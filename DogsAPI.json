@@ -1,0 +1,175 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Vet clinic - OpenAPI 3.0",
+    "description": "",
+    "version": "1.0.11"
+  },
+  "servers": [
+    {
+      "url": "https://api.luckydogs.com/v1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Dog",
+      "description": "Everything about your Dogs"
+    }
+  ],
+  "paths": {
+    "/pet/showMyDogs": {
+      "get": {
+        "tags": [
+          "Dog"
+        ],
+        "summary": "Show all my dogs",
+        "operationId": "showMyDogs",
+        "parameters": [
+          {
+            "name": "ownerId",
+            "in": "query",
+            "required": true,
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Dog"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid ID"
+          },
+          "401": {
+            "description": "Authorization required"
+          },
+          "404": {
+            "description": "PersonId not found"
+          }
+        },
+        "security": [
+          {
+            "api_key": []
+          }
+        ]
+      }
+    },
+    "/pet/showAllDogs": {
+      "get": {
+        "tags": [
+          "Dog"
+        ],
+        "summary": "Filter Dogs without owner",
+        "operationId": "findAllDogs",
+        "parameters": [
+          {
+            "name": "OwnerId",
+            "in": "query",
+            "description": "Tags to filter by",
+            "required": false,
+            "explode": true,
+            "schema": {
+              "type": "integer",
+              "enum": [
+                0
+              ]
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Dog"
+                  }
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Dog"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid OwnerId"
+          },
+          "404": {
+            "description": "Dogs not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Dog": {
+        "required": [
+          "id",
+          "name"
+        ],
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64",
+            "example": 10
+          },
+          "name": {
+            "type": "string",
+            "example": "Marlo"
+          },
+          "ownerId": {
+            "type": "integer",
+            "format": "int64",
+            "example": 1
+          }
+        }
+      }
+    },
+    "requestBodies": {
+      "Dog": {
+        "description": "Pet object that needs to be added to the store",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Dog"
+            }
+          },
+          "application/xml": {
+            "schema": {
+              "$ref": "#/components/schemas/Dog"
+            }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "api_key": {
+        "type": "apiKey",
+        "name": "api_key",
+        "in": "header"
+      }
+    }
+  }
+}
